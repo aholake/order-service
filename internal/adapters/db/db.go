@@ -35,7 +35,7 @@ func NewAdapter(connectionUrl string) (*Adapter, error) {
 	}
 	error := db.AutoMigrate(Order{}, OrderItem{})
 	if error != nil {
-		return nil, fmt.Errorf("db migration error: %v", err)
+		return nil, fmt.Errorf("db migration error: %v", error)
 	}
 	return &Adapter{db: db}, nil
 }

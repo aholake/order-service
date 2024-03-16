@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"github.com/aholake/order-proto/golang/order"
 	"github.com/aholake/order-service/internal/application/core/domain"
@@ -40,7 +41,7 @@ func (a Adapter) Run() {
 	}
 }
 
-func (a Adapter) Create(context context.Context, orderRequest *order.CreateOrderRequest) (*order.CreateOrderResponse, error) {
+func (a Adapter) Create(ctx context.Context, orderRequest *order.CreateOrderRequest) (*order.CreateOrderResponse, error) {
 	orderItems := []domain.OrderItem{}
 	for _, oi := range orderRequest.OrderItems {
 		orderItems = append(orderItems, domain.OrderItem{
@@ -50,7 +51,8 @@ func (a Adapter) Create(context context.Context, orderRequest *order.CreateOrder
 		})
 	}
 	newOrder := domain.NewOrder(orderRequest.UserId, orderItems)
-	res, err := a.api.PlaceOrder(context, newOrder)
+	timeoutCtx, _ := context.WithTimeout(ctx, time.Millisecond*200)
+	res, err := a.api.PlaceOrder(timeoutCtx, newOrder)
 	if err != nil {
 		return nil, err
 	}

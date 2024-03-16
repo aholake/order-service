@@ -24,3 +24,11 @@ func NewOrder(customerId int64, orderItems []OrderItem) Order {
 		Status:     "Pending",
 	}
 }
+
+func (o Order) TotalPrice() float32 {
+	var totalPrice float32
+	for _, oi := range o.OrderItems {
+		totalPrice += oi.UnitPrice * float32(oi.Quantity)
+	}
+	return totalPrice
+}

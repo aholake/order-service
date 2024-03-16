@@ -7,11 +7,9 @@ import (
 	"net"
 
 	"github.com/aholake/order-proto/golang/order"
-	"github.com/aholake/order-service/config"
 	"github.com/aholake/order-service/internal/application/core/domain"
 	"github.com/aholake/order-service/internal/ports"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 type Adapter struct {
@@ -37,9 +35,6 @@ func (a Adapter) Run() {
 
 	grpcServer := grpc.NewServer()
 	order.RegisterOrderServer(grpcServer, a)
-	if config.GetEnv() == "development" {
-		reflection.Register(grpcServer)
-	}
 	if err = grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve grpc on port %d, error: %v", a.port, err)
 	}
@@ -55,7 +50,7 @@ func (a Adapter) Create(context context.Context, orderRequest *order.CreateOrder
 		})
 	}
 	newOrder := domain.NewOrder(orderRequest.UserId, orderItems)
-	res, err := a.api.PlaceOrder(newOrder)
+	res, err := a.api.PlaceOrder(context, newOrder)
 	if err != nil {
 		return nil, err
 	}

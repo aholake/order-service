@@ -1,7 +1,11 @@
 package ports
 
-import "github.com/aholake/order-service/internal/application/core/domain"
+import (
+	"context"
+
+	"github.com/aholake/order-service/internal/application/core/domain"
+)
 
 type APIPort interface {
-	PlaceOrder(order domain.Order) (domain.Order, error)
+	PlaceOrder(context.Context, domain.Order) (domain.Order, error)
 }

@@ -51,8 +51,9 @@ func (a Adapter) Create(ctx context.Context, orderRequest *order.CreateOrderRequ
 		})
 	}
 	newOrder := domain.NewOrder(orderRequest.UserId, orderItems)
-	timeoutCtx, _ := context.WithTimeout(ctx, time.Millisecond*200)
+	timeoutCtx, cancel := context.WithTimeout(ctx, time.Millisecond*200)
 	res, err := a.api.PlaceOrder(timeoutCtx, newOrder)
+	cancel()
 	if err != nil {
 		return nil, err
 	}

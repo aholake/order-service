@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/aholake/order-service/internal/adapters/payment"
-	"github.com/aholake/order-service/internal/adapters/shipping"
 	"github.com/aholake/order-service/internal/application/core/domain"
 	"github.com/aholake/order-service/internal/ports"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -15,11 +13,11 @@ import (
 
 type Application struct {
 	db       ports.DBPort
-	payment  payment.Adapter
-	shipping shipping.ShippingAdapter
+	payment  ports.PaymentClientPort
+	shipping ports.ShippingClientPort
 }
 
-func NewApplication(db ports.DBPort, paymentAdapter payment.Adapter, shipping shipping.ShippingAdapter) *Application {
+func NewApplication(db ports.DBPort, paymentAdapter ports.PaymentClientPort, shipping ports.ShippingClientPort) *Application {
 	return &Application{
 		db:       db,
 		payment:  paymentAdapter,
